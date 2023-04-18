@@ -1,13 +1,15 @@
 <script lang="ts">
-	import { location } from '$lib/location';
+	import { gotoChannel } from '$lib/nav/goto';
+	import { location } from '$lib/nav/location';
 
-	export let channel_name: string;
+	export let name: string;
+	export let id: string;
 </script>
 
 <div
 	class={'cursor-pointer hover:bg-dark-4 hover:text-white-1 rounded w-full py-1 pl-3 ' +
-		($location['channel'] === channel_name ? 'bg-dark-4 text-white-1' : '')}
-	on:pointerup={() => ($location['channel'] = channel_name)}
+		($location['channel'] == id ? 'bg-dark-4 text-white-1' : '')}
+	on:pointerup={() => gotoChannel(id)}
 >
-	{'# ' + channel_name}
+	{'# ' + name}
 </div>

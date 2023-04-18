@@ -5,6 +5,4 @@ const location: Writable<{ server: string; channel: string }> = writable({
 	channel: 'general'
 });
 
-console.log(location);
-
 export { location };
