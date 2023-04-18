@@ -3,7 +3,7 @@
 	import { location } from '$lib/nav/location';
 	import { all_messages, sendMessage } from '$lib/messages';
 	import { usernameColor } from '$lib/users';
-	import { isLoadingMessages } from '$lib/nav/loading';
+	import { isLoadingChannels, isLoadingMessages } from '$lib/nav/loading';
 
 	let chatMessage: string = '';
 	function submitMessage() {
@@ -38,14 +38,18 @@
 		<div class="text-white">LOADING</div>
 	{/if}
 	<div class="absolute bottom-5 inset-x-5 z-10 bg-dark-4 px-4 text-white-1 rounded">
-		<form on:submit|preventDefault={submitMessage}>
-			<input
-				class="w-full py-2 outline-none bg-transparent"
-				placeholder={'Message to ' +
-					$all_messages[$location['server']]['channels'][$location['channel']]['name']}
-				bind:value={chatMessage}
-			/>
-		</form>
+		{#if !$isLoadingChannels}
+			<form on:submit|preventDefault={submitMessage}>
+				<input
+					class="w-full py-2 outline-none bg-transparent"
+					placeholder={'Message to ' +
+						$all_messages[$location['server']]['channels'][$location['channel']]['name']}
+					bind:value={chatMessage}
+				/>
+			</form>
+		{:else}
+			<div class="text-white">LOADING</div>
+		{/if}
 	</div>
 </div>
 
