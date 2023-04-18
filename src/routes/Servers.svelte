@@ -2,10 +2,7 @@
 	import Server from '../lib/components/Server.svelte';
 	const servers = {
 		general: '',
-		'best-server': '',
-		ge: '',
-		NEW: '',
-		gad2ra: ''
+		'best-server': ''
 	};
 </script>
 

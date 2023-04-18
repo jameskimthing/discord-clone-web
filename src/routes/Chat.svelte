@@ -22,7 +22,7 @@
 	<div class="absolute bottom-20 w-full top-0 overflow-auto px-5 flex flex-col-reverse">
 		<div class="mt-auto">
 			{#each chats as chat (chat)}
-				<div class="flex flex-row items-center pb-4">
+				<div class="flex flex-row items-center pt-4">
 					<UserProfile username={chat['name']} />
 					<div class="flex flex-col pl-3">
 						<div class="text-sm" style={`color: ${usernameColor(chat['name'])};`}>
