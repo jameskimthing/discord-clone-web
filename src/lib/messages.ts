@@ -3,6 +3,7 @@ import { location } from './nav/location';
 import { writable, type Writable } from 'svelte/store';
 import { supabase } from './supabase';
 import { username } from './users';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 
 const all_messages: Writable<{
 	[server_id: string]: {
@@ -49,8 +50,9 @@ async function sendMessage(message: string) {
 	}
 }
 
+let subscription: RealtimeChannel;
 function startSubscribe() {
-	supabase
+	subscription = supabase
 		.channel('messages')
 		.on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, (payload: any) => {
 			all_messages.update((prev) => {
