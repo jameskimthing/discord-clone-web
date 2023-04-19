@@ -49,33 +49,36 @@ async function sendMessage(message: string) {
 	}
 }
 
-supabase
-	.channel('messages')
-	.on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, (payload: any) => {
-		all_messages.update((prev) => {
-			prev[payload.new['server_id']] ??= { name: 'loading...', loaded: false, channels: {} };
-			prev[payload.new['server_id']]['channels'][payload.new['channel_id']] ??= {
-				name: 'loading...',
-				loaded: false,
-				users: new Set(),
-				messages: []
-			};
+function startSubscribe() {
+	supabase
+		.channel('messages')
+		.on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, (payload: any) => {
+			all_messages.update((prev) => {
+				prev[payload.new['server_id']] ??= { name: 'loading...', loaded: false, channels: {} };
+				prev[payload.new['server_id']]['channels'][payload.new['channel_id']] ??= {
+					name: 'loading...',
+					loaded: false,
+					users: new Set(),
+					messages: []
+				};
 
-			const users = prev[payload.new['server_id']]['channels'][payload.new['channel_id']]['users'];
-			const messages =
-				prev[payload.new['server_id']]['channels'][payload.new['channel_id']]['messages'];
-			const toPush = {
-				name: payload.new['name'],
-				message: payload.new['message']
-			};
+				const users =
+					prev[payload.new['server_id']]['channels'][payload.new['channel_id']]['users'];
+				const messages =
+					prev[payload.new['server_id']]['channels'][payload.new['channel_id']]['messages'];
+				const toPush = {
+					name: payload.new['name'],
+					message: payload.new['message']
+				};
 
-			if (JSON.stringify(messages[messages.length - 1]) !== JSON.stringify(toPush)) {
-				messages.push(toPush);
-				users.add(payload.new['name']);
-			}
-			return prev;
-		});
-	})
-	.subscribe();
+				if (JSON.stringify(messages[messages.length - 1]) !== JSON.stringify(toPush)) {
+					messages.push(toPush);
+					users.add(payload.new['name']);
+				}
+				return prev;
+			});
+		})
+		.subscribe();
+}
 
-export { sendMessage, all_messages };
+export { sendMessage, all_messages, startSubscribe };

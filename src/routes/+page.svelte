@@ -6,6 +6,9 @@
 	import Topbar from './Topbar.svelte';
 	import Users from './Users.svelte';
 	import { username } from '$lib/users';
+	import { startSubscribe } from '$lib/messages';
+
+	startSubscribe();
 
 	let gaveUsername: boolean = false;
 	let usernameBind: string = '';
