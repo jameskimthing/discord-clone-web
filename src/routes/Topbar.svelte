@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Loading from '$lib/components/Loading.svelte';
 	import { all_messages } from '$lib/messages';
 	import { isLoadingChannels } from '$lib/nav/loading';
 	import { location } from '$lib/nav/location';
@@ -13,7 +14,8 @@
 					<!-- {'# ' + $location['channel']} -->
 				</div>
 			{:else}
-				<div class="text-white">IS LOADING</div>
+				<Loading />
+				<!-- <div class="text-white">IS LOADING</div> -->
 			{/if}
 		</div>
 	</div>

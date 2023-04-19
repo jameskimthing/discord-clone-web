@@ -4,6 +4,7 @@
 	import { all_messages, sendMessage } from '$lib/messages';
 	import { usernameColor } from '$lib/users';
 	import { isLoadingChannels, isLoadingMessages } from '$lib/nav/loading';
+	import Loading from '$lib/components/Loading.svelte';
 
 	let chatMessage: string = '';
 	function submitMessage() {
@@ -35,7 +36,8 @@
 			</div>
 		</div>
 	{:else}
-		<div class="text-white">LOADING</div>
+		<Loading />
+		<!-- <div class="text-white">LOADING</div> -->
 	{/if}
 	<div class="absolute bottom-5 inset-x-5 z-10 bg-dark-4 px-4 text-white-1 rounded">
 		{#if !$isLoadingChannels}
@@ -48,7 +50,8 @@
 				/>
 			</form>
 		{:else}
-			<div class="text-white">LOADING</div>
+			<Loading />
+			<!-- <div class="text-white">LOADING</div> -->
 		{/if}
 	</div>
 </div>

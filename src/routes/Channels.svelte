@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Channel from '$lib/components/Channel.svelte';
+	import Loading from '$lib/components/Loading.svelte';
 	import { all_messages } from '$lib/messages';
 	import { isLoadingChannels } from '$lib/nav/loading';
 	import { location } from '$lib/nav/location';
@@ -24,7 +25,7 @@
 				</div>
 			</div>
 		{:else}
-			<div class="text-white">LOADING</div>
+			<Loading />
 		{/if}
 	</div>
 </div>

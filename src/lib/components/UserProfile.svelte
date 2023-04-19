@@ -6,7 +6,7 @@
 </script>
 
 <div
-	class="w-10 h-10 text-white-1 font-bold text-xl rounded-full flex items-center justify-center"
+	class="w-10 h-10 text-white-1 font-bold text-xl rounded-full flex items-center justify-center select-none"
 	style={`background-color: ${usernameColor(username)};`}
 >
 	{initial}

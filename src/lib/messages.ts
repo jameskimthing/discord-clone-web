@@ -2,6 +2,7 @@ import { get } from 'svelte/store';
 import { location } from './nav/location';
 import { writable, type Writable } from 'svelte/store';
 import { supabase } from './supabase';
+import { username } from './users';
 
 const all_messages: Writable<{
 	[server_id: string]: {
@@ -10,6 +11,8 @@ const all_messages: Writable<{
 		channels: {
 			[channel_id: string]: {
 				name: string;
+				loaded: boolean;
+				users: Set<string>;
 				messages: {
 					name: string;
 					message: string;
@@ -21,11 +24,14 @@ const all_messages: Writable<{
 
 async function sendMessage(message: string) {
 	const loc = get(location);
+	const name = get(username);
+
 	all_messages.update((prev) => {
 		prev[loc['server']]['channels'][loc['channel']]['messages'].push({
-			name: 'Greatname tho',
+			name: name,
 			message: message
 		});
+		prev[loc['server']]['channels'][loc['channel']]['users'].add(name);
 		return prev;
 	});
 
@@ -33,7 +39,7 @@ async function sendMessage(message: string) {
 		{
 			channel_id: loc['channel'],
 			server_id: loc['server'],
-			name: 'Greatname tho',
+			name: name,
 			message: message
 		}
 	]);
@@ -47,10 +53,26 @@ supabase
 	.channel('messages')
 	.on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, (payload: any) => {
 		all_messages.update((prev) => {
-			prev[payload.new['server_id']]['channels'][payload.new['channel_id']]['messages'].push({
+			prev[payload.new['server_id']] ??= { name: 'loading...', loaded: false, channels: {} };
+			prev[payload.new['server_id']]['channels'][payload.new['channel_id']] ??= {
+				name: 'loading...',
+				loaded: false,
+				users: new Set(),
+				messages: []
+			};
+
+			const users = prev[payload.new['server_id']]['channels'][payload.new['channel_id']]['users'];
+			const messages =
+				prev[payload.new['server_id']]['channels'][payload.new['channel_id']]['messages'];
+			const toPush = {
 				name: payload.new['name'],
 				message: payload.new['message']
-			});
+			};
+
+			if (JSON.stringify(messages[messages.length - 1]) !== JSON.stringify(toPush)) {
+				messages.push(toPush);
+				users.add(payload.new['name']);
+			}
 			return prev;
 		});
 	})

@@ -12,7 +12,7 @@ async function gotoServer(server_id: string) {
 	const messages = get(all_messages);
 	if (!messages[server_id]['loaded']) {
 		isLoadingChannels.set(true);
-		messages[server_id]['loaded'] = true;
+		// messages[server_id]['loaded'] = true;
 
 		console.log(server_id);
 		let { data: channels, error } = await supabase
@@ -26,11 +26,14 @@ async function gotoServer(server_id: string) {
 				if (!defaultChannel) defaultChannel = channel.id;
 
 				prev[server_id]['channels'][channel.id] = {
+					loaded: false,
+					users: new Set(),
 					name: channel.name,
 					messages: []
 				};
 			});
 
+			messages[server_id]['loaded'] = true;
 			return prev;
 		});
 	}
@@ -54,7 +57,8 @@ async function gotoChannel(channel_id: string) {
 		return prev;
 	});
 
-	if ((messages[server_id]?.['channels'][channel_id]?.['messages'] ?? []).length === 0) {
+	if (!messages[server_id]?.['channels'][channel_id]?.['loaded']) {
+		// if ((messages[server_id]?.['channels'][channel_id]?.['messages'] ?? []).length === 0) {
 		isLoadingMessages.set(true);
 
 		// get messages of certain channel;
@@ -67,6 +71,10 @@ async function gotoChannel(channel_id: string) {
 		// update messages in store;
 		all_messages.update((prev) => {
 			prev[server_id]['channels'][channel_id]['messages'] = messages!;
+			prev[server_id]['channels'][channel_id]['loaded'] = true;
+			for (const m of messages!) {
+				prev[server_id]['channels'][channel_id]['users'].add(m['name']);
+			}
 			return prev;
 		});
 	}

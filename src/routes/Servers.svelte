@@ -4,6 +4,7 @@
 	import { isLoadingServers } from '$lib/nav/loading';
 	import { supabase } from '$lib/supabase';
 	import { all_messages } from '$lib/messages';
+	import Loading from '$lib/components/Loading.svelte';
 
 	let serversHere: { name: string; id: string }[] = [];
 	(async () => {
@@ -39,7 +40,8 @@
 				{/each}
 			</div>
 		{:else}
-			<div class="text-white">LOADING</div>
+			<Loading />
+			<!-- <div class="text-white">LOADING</div> -->
 		{/if}
 	</div>
 </div>

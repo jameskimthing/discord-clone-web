@@ -13,7 +13,9 @@ export default {
 				// White to gray
 				'white-1': '#F2F3F5',
 				'white-2': '#AFB4BB',
-				'white-3': '#474951'
+				'white-3': '#474951',
+
+				'blue-1': '#5865F2'
 			}
 		}
 	},

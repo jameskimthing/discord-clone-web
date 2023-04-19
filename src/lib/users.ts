@@ -1,3 +1,5 @@
+import { writable, type Writable } from 'svelte/store';
+
 const users: { [name: string]: string } = {};
 
 // shamelessly copied from stack overflow
@@ -17,4 +19,6 @@ function usernameColor(str: string) {
 	return color;
 }
 
-export { usernameColor };
+const username: Writable<string> = writable('username');
+
+export { usernameColor, username };
