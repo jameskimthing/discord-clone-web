@@ -25,12 +25,27 @@ async function initializeVoiceChat() {
 		.channel('call_session_users')
 		.on(
 			'postgres_changes',
-			{ event: '*', schema: 'public', table: 'call_session_users' },
+			{ event: 'INSERT', schema: 'public', table: 'call_session_users' },
 			(payload: any) => {
 				console.log('Change!');
 				voicechat_members.update((prev) => {
 					prev.add(payload.new.username);
 					console.log('Update added: ' + payload.new.username);
+					return prev;
+				});
+			}
+		)
+		.subscribe();
+	supabase
+		.channel('call_session_users')
+		.on(
+			'postgres_changes',
+			{ event: 'DELETE', schema: 'public', table: 'call_session_users' },
+			(payload: any) => {
+				console.log('Change!');
+				voicechat_members.update((prev) => {
+					prev.delete(payload.new.username);
+					console.log('Update removed: ' + payload.new.username);
 					return prev;
 				});
 			}
@@ -82,7 +97,12 @@ async function joinVoicechat(server_id: string) {
 
 	client.on('user-left', (user: any) => {
 		voicechat_members.update((prev) => {
+			console.log('This here?');
 			prev.delete(user.uid as string);
+			supabase
+				.from('call_session_users')
+				.delete()
+				.eq('username', user.uid as string);
 			return prev;
 		});
 	});
