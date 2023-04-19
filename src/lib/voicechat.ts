@@ -27,9 +27,9 @@ async function initializeVoiceChat() {
 			'postgres_changes',
 			{ event: '*', schema: 'public', table: 'call_session_users' },
 			(payload: any) => {
-				console.log('Change!');
+				console.log('Change!: ' + JSON.stringify(payload));
 				voicechat_members.update((prev) => {
-					if (payload.event === 'DELETE') prev.delete(payload.new.username);
+					if (payload.eventType === 'DELETE') prev.delete(payload.new.username);
 					else prev.add(payload.new.username);
 					return prev;
 				});
@@ -46,6 +46,7 @@ async function joinVoicechat(server_id: string) {
 	if (joined) {
 		localAudioTrack.stop();
 		await client.leave();
+		supabase.from('call_session_users').delete().eq('username', get(username));
 		return;
 	}
 	joined = true;
@@ -58,14 +59,7 @@ async function joinVoicechat(server_id: string) {
 
 	// Create && join
 	client = AgoraRTC.createClient({ mode: 'rtc', codec: 'h264' });
-	console.log('Channel: ' + get(location)['server']);
-	await client.join(
-		import.meta.env.VITE_AGORA_APP_ID,
-		// get(location)['server'],
-		'best-channel',
-		null,
-		get(username)
-	);
+	await client.join(import.meta.env.VITE_AGORA_APP_ID, 'best-channel', null, get(username));
 
 	// Push audio track
 	localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
@@ -84,10 +78,14 @@ async function joinVoicechat(server_id: string) {
 		voicechat_members.update((prev) => {
 			console.log('This here?');
 			prev.delete(user.uid as string);
-			supabase
-				.from('call_session_users')
-				.delete()
-				.eq('username', user.uid as string);
+			(async () => {
+				console.log('Delete user of ' + user.uid);
+				const { error } = await supabase
+					.from('call_session_users')
+					.delete()
+					.eq('username', user.uid as string);
+				if (error) throw error;
+			})();
 			return prev;
 		});
 	});
