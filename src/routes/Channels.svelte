@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Channel from '$lib/components/Channel.svelte';
 	import Loading from '$lib/components/Loading.svelte';
+	import Voicechat from '$lib/components/Voicechat.svelte';
 	import { all_messages } from '$lib/messages';
 	import { isLoadingChannels } from '$lib/nav/loading';
 	import { location } from '$lib/nav/location';
@@ -22,6 +23,11 @@
 					{#each Object.entries(channels) as [id, data]}
 						<Channel {id} name={data.name} />
 					{/each}
+					{#if $location['server'] == '1'}
+						<div class="pt-4">
+							<Voicechat />
+						</div>
+					{/if}
 				</div>
 			</div>
 		{:else}

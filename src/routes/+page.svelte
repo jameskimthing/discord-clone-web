@@ -13,6 +13,7 @@
 	let gaveUsername: boolean = false;
 	let usernameBind: string = '';
 	function giveUsername() {
+		usernameBind = usernameBind.replace(/[^\w\s]/gi, '');
 		username.set(usernameBind);
 		gaveUsername = true;
 	}
