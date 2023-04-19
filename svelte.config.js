@@ -5,6 +5,7 @@ import { vitePreprocess } from '@sveltejs/kit/vite';
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
+		// paths: { base: '/discord-clone-web' },
 		adapter: adapter({
 			pages: 'docs',
 			assets: 'docs'
