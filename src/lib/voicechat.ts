@@ -29,23 +29,8 @@ async function initializeVoiceChat() {
 			(payload: any) => {
 				console.log('Change!');
 				voicechat_members.update((prev) => {
-					prev.add(payload.new.username);
-					console.log('Update added: ' + payload.new.username);
-					return prev;
-				});
-			}
-		)
-		.subscribe();
-	supabase
-		.channel('call_session_users')
-		.on(
-			'postgres_changes',
-			{ event: 'DELETE', schema: 'public', table: 'call_session_users' },
-			(payload: any) => {
-				console.log('Change!');
-				voicechat_members.update((prev) => {
-					prev.delete(payload.new.username);
-					console.log('Update removed: ' + payload.new.username);
+					if (payload.event === 'DELETE') prev.delete(payload.new.username);
+					else prev.add(payload.new.username);
 					return prev;
 				});
 			}
