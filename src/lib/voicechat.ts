@@ -25,7 +25,7 @@ async function initializeVoiceChat() {
 		.channel('call_session_users')
 		.on(
 			'postgres_changes',
-			{ event: 'INSERT', schema: 'public', table: 'call_session_users' },
+			{ event: '*', schema: 'public', table: 'call_session_users' },
 			(payload: any) => {
 				console.log('Change!');
 				voicechat_members.update((prev) => {
