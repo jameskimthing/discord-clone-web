@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { gotoServer } from '$lib/nav/goto';
 	import { location } from '$lib/nav/location';
+	import { usernameColor } from '$lib/users';
 
 	export let name: string;
 	export let id: string;
@@ -15,6 +16,7 @@
 			if (onclick) onclick();
 			else gotoServer(id);
 		}}
+		style={`background-color: ${usernameColor(name)};`}
 	>
 		<div
 			class="absolute left-[70px] select-none inset-y-0 my-auto h-min w-min opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 transition-all cursor-default"

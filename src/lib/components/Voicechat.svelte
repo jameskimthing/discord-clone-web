@@ -11,7 +11,7 @@
 		($location['channel'] == 'voice' ? 'bg-dark-4 text-white-1' : '')}
 	on:pointerup={() => joinVoicechat($location['server'])}
 >
-	voice chat
+	- voice chat
 	<div class="flex flex-row flex-wrap gap-2 pb-1">
 		{#each Array.from($voicechat_members) as username}
 			<UserProfile {username} />
